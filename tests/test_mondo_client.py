@@ -27,6 +27,25 @@ def add_annotation(client):
     client.remove_annotations(transaction_id, [annotation_key])
 
 
+@pytest.yield_fixture()
+def add_attachment(client):
+    transactions = client.list_transactions()
+    transaction_id = transactions[0]['id']
+    base_dir = os.path.dirname(__file__)
+    file_path = '{0}/mondo-logo.png'.format(base_dir)
+    file_upload = client.upload_attachment(file_path)
+    attachment = client.attach_file(
+        transaction_id,
+        file_upload['file_url'],
+        file_upload['file_type']
+    )
+    yield {
+        'attachment_id': attachment['id'],
+        'transaction_id': transaction_id
+    }
+    client.remove_attachment(attachment['id'])
+
+
 class TestMondoClient:
 
     def test_refresh_access_token(self, client):
@@ -125,9 +144,32 @@ class TestMondoClient:
         assert len(webhooks) < number_of_hooks
 
     def test_add_attachment(self, client):
-        # attachment = client.add_attachment()
-        pass
+        transactions = client.list_transactions()
+        transaction_id = transactions[0]['id']
 
-    def test_remove_attachment(self, client):
-        # attachment = client.remove_attachment()
-        pass
+        base_dir = os.path.dirname(__file__)
+        file_path = '{0}/mondo-logo.png'.format(base_dir)
+        file_upload = client.upload_attachment(file_path)
+        assert file_upload['file_type'] == 'image/png'
+        assert 'file_url' in file_upload
+
+        attachment = client.attach_file(
+            transaction_id,
+            file_upload['file_url'],
+            file_upload['file_type']
+        )
+        assert 'id' in attachment
+        assert attachment['file_type'] == file_upload['file_type']
+        assert attachment['file_url'] == file_upload['file_url']
+        assert attachment['external_id'] == transaction_id
+        client.remove_attachment(attachment['id'])
+
+    def test_remove_attachment(self, client, add_attachment):
+        transaction_id = add_attachment['transaction_id']
+        attachment_id = add_attachment['attachment_id']
+
+        transaction = client.get_transaction(transaction_id)
+        number_of_attachments = transaction['attachments']
+        client.remove_attachment(attachment_id)
+        transaction = client.get_transaction(transaction_id)
+        assert transaction['attachments'] < number_of_attachments

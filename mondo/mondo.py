@@ -1,6 +1,8 @@
+import os
 import urllib
 import requests
 from urlparse import urljoin
+from mimetypes import MimeTypes
 from datetime import datetime, timedelta
 
 
@@ -246,21 +248,34 @@ class MondoClient(object):
         response = self.delete(url)
         return response
 
-    def add_attachment(self, transaction_id, file_name, file_type):
-        file_info = self._upload_attachment(file_name, file_type)
-        attachment = self.attach_file(
-            transaction_id, file_info['file_url'], file_type
-        )
-        return attachment
+    def upload_attachment(self, file_path):
+        __, file_name = os.path.split(file_path)
+        mime = MimeTypes()
+        url = urllib.pathname2url(file_path)
+        mime_type, __ = mime.guess_type(url)
 
-    def _upload_attachment(self, file_name, file_type):
         data = {
             'file_name': file_name,
-            'file_type': file_type
+            'file_type': mime_type
         }
         url = urljoin(self.api_url, 'attachment/upload')
         response = self.post(url, data=data)
-        return response
+
+        with open(file_path) as fh:
+            file_data = fh.read()
+
+        upload_response = requests.put(
+            response['upload_url'],
+            data=file_data,
+            headers={'content-type': mime_type},
+            params={'file': file_path}
+        )
+        upload_response.raise_for_status()
+
+        return {
+            'file_url': response['file_url'],
+            'file_type': mime_type,
+        }
 
     def attach_file(self, transaction_id, file_url, file_type):
         url = urljoin(self.api_url, 'attachment/register')
@@ -270,10 +285,10 @@ class MondoClient(object):
             'file_type': file_type
         }
         response = self.post(url, data=data)
-        return response
+        return response['attachment']
 
     def remove_attachment(self, attachment_id):
         url = urljoin(self.api_url, 'attachment/deregister')
         data = {'id': attachment_id}
         response = self.post(url, data=data)
-        return response.json()
+        return response
