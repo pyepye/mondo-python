@@ -170,15 +170,21 @@ class MondoClient(object):
         """ Metadata is just a key:value pair """
 
         url = urljoin(self.api_url, 'transactions/{0}'.format(transactions_id))
-        data = {'metadata': metadata}
+        data = {}
+        for key, value in metadata.items():
+            data['metadata[{}]'.format(key)] = value
+
         response = self.patch(url, data=data)
-        return response
+        return response['transaction']
 
     def remove_annotations(self, transactions_id, annotation_keys):
         """ annotation_keys is a list of keys to remove """
 
         url = urljoin(self.api_url, 'transactions/{0}'.format(transactions_id))
-        data = {'metadata': {key: '' for key in annotation_keys}}
+        data = {}
+        for key in annotation_keys:
+            data['metadata[{}]'.format(key)] = ''
+
         response = self.patch(url, data=data)
         return response
 

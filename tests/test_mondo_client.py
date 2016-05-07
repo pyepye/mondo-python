@@ -55,18 +55,29 @@ class TestMondoClient:
 
     def test_get_transaction(self, client):
         transactions = client.list_transactions()
-        assert len(transactions) > 0
         transaction_id = transactions[0]['id']
         transaction = client.get_transaction(transaction_id)
         assert transaction['id'] == transactions[0]['id']
 
     def test_annotate_transaction(self, client):
-        # annotate = client.annotate_transaction()
-        pass
+        annotation_key = 'testannotation'
+        transactions = client.list_transactions()
+        transaction_id = transactions[0]['id']
+        metadata = {annotation_key: annotation_key}
+        transaction = client.annotate_transaction(transaction_id, metadata)
+        assert 'testannotation' in transaction['metadata']
+
+        client.remove_annotations(transaction_id, [annotation_key])
 
     def test_remove_annotations(self, client):
-        # remove_annotations()
-        pass
+        annotation_key = 'testannotation'
+        transactions = client.list_transactions()
+        transaction_id = transactions[0]['id']
+        metadata = {annotation_key: annotation_key}
+        client.annotate_transaction(transaction_id, metadata)
+        client.remove_annotations(transaction_id, [annotation_key])
+        transaction = client.get_transaction(transaction_id)
+        assert 'testannotation' not in transaction['metadata']
 
     def test_create_feed_item(self, client):
         # feed_item = client.create_feed_item()
