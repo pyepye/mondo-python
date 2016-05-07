@@ -13,6 +13,20 @@ def webhook(client):
     client.remove_webhook(webhook_id=webhook['id'])
 
 
+@pytest.yield_fixture()
+def add_annotation(client):
+    annotation_key = 'testannotation'
+    transactions = client.list_transactions()
+    transaction_id = transactions[0]['id']
+    metadata = {annotation_key: annotation_key}
+    client.annotate_transaction(transaction_id, metadata)
+    yield {
+        'transaction_id': transaction_id,
+        'annotation_key': annotation_key
+    }
+    client.remove_annotations(transaction_id, [annotation_key])
+
+
 class TestMondoClient:
 
     def test_refresh_access_token(self, client):
@@ -80,15 +94,12 @@ class TestMondoClient:
 
         client.remove_annotations(transaction_id, [annotation_key])
 
-    def test_remove_annotations(self, client):
-        annotation_key = 'testannotation'
-        transactions = client.list_transactions()
-        transaction_id = transactions[0]['id']
-        metadata = {annotation_key: annotation_key}
-        client.annotate_transaction(transaction_id, metadata)
+    def test_remove_annotations(self, client, add_annotation):
+        transaction_id = add_annotation['transaction_id']
+        annotation_key = add_annotation['annotation_key']
         client.remove_annotations(transaction_id, [annotation_key])
         transaction = client.get_transaction(transaction_id)
-        assert 'testannotation' not in transaction['metadata']
+        assert annotation_key not in transaction['metadata']
 
     def test_create_feed_item(self, client):
         # feed_item = client.create_feed_item()
