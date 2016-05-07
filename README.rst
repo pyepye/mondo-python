@@ -67,7 +67,6 @@ ToDo
 ----
 -  Perhaps split client into multiple files
 -  Finish writing tests
--  Support Webhooks
 -  Raise correct errors
 -  Python 3+ support
 

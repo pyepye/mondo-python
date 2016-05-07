@@ -1,6 +1,19 @@
 import os
 import json
 
+import pytest
+
+TEST_WEBHOOK_URL = 'http://example.com/mondotestwebhooks'
+
+
+@pytest.yield_fixture()
+def webhook(client):
+    webhook = client.create_webhook(webhook_url=TEST_WEBHOOK_URL)
+
+    yield webhook
+
+    client.remove_webhook(webhook_id=webhook['id'])
+
 
 class TestMondoClient:
 
@@ -58,6 +71,25 @@ class TestMondoClient:
     def test_create_feed_item(self, client):
         # feed_item = client.create_feed_item()
         pass
+
+    def test_list_webhooks(self, client, webhook):
+        webhooks = client.list_webhooks()
+        assert len(webhooks) > 0
+
+    def test_create_webhook(self, client):
+        webhook = client.create_webhook(webhook_url=TEST_WEBHOOK_URL)
+        assert webhook['url'] == TEST_WEBHOOK_URL
+        assert webhook['account_id'] == client.account_id
+
+        webhook = client.remove_webhook(webhook_id=webhook['id'])
+
+    def test_delete_webhook(self, client, webhook):
+        webhook = client.create_webhook(webhook_url=TEST_WEBHOOK_URL)
+        current_webhooks = client.list_webhooks()
+        number_of_hooks = len(current_webhooks)
+        client.remove_webhook(webhook_id=webhook['id'])
+        webhooks = client.list_webhooks()
+        assert len(webhooks) < number_of_hooks
 
     def test_add_attachment(self, client):
         # attachment = client.add_attachment()

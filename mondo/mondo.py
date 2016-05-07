@@ -35,6 +35,9 @@ class MondoClient(object):
     def patch(self, url, data):
         return self.request(url=url, method='PATCH', data=data)
 
+    def delete(self, url):
+        return self.request(url=url, method='DELETE')
+
     def request(self, **kwargs):
         self._ensure_access_token()
 
@@ -208,6 +211,33 @@ class MondoClient(object):
             data['params']['body_color'] = body_color
 
         response = self.post(url, data=data)
+        return response
+
+    def list_webhooks(self, account_id=None):
+        if account_id:
+            self.account_id = account_id
+
+        url = urljoin(self.api_url, 'webhooks?account_id={0}'.format(self.account_id))  # NOQA
+        response = self.get(url)
+        return response['webhooks']
+
+    def create_webhook(self, webhook_url, account_id=None):
+        if account_id:
+            self.account_id = account_id
+        url = urljoin(self.api_url, 'webhooks')
+        data = {
+            'account_id': self.account_id,
+            'url': webhook_url,
+        }
+        response = self.post(url, data)
+        return response['webhook']
+
+    def remove_webhook(self, webhook_id, account_id=None):
+        if account_id:
+            self.account_id = account_id
+
+        url = urljoin(self.api_url, 'webhooks/{0}'.format(webhook_id))
+        response = self.delete(url)
         return response
 
     def add_attachment(self, transaction_id, file_name, file_type):
