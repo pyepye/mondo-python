@@ -9,9 +9,7 @@ TEST_WEBHOOK_URL = 'http://example.com/mondotestwebhooks'
 @pytest.yield_fixture()
 def webhook(client):
     webhook = client.create_webhook(webhook_url=TEST_WEBHOOK_URL)
-
     yield webhook
-
     client.remove_webhook(webhook_id=webhook['id'])
 
 
