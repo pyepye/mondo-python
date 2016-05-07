@@ -190,6 +190,14 @@ class MondoClient(object):
         response = self.patch(url, data=data)
         return response
 
+    def get_feed(self, account_id=None):
+        if account_id:
+            self.account_id = account_id
+
+        url = urljoin(self.api_url, 'feed?account_id={0}'.format(self.account_id))  # NOQA
+        response = self.get(url)
+        return response
+
     def create_feed_item(
         self, title, image_url, url=None, body=None,
         background_color=None, title_color=None, body_color=None,
@@ -202,21 +210,19 @@ class MondoClient(object):
         data = {
             'account_id': self.account_id,
             'type': 'basic',
-            'params': {
-                'title': title,
-                'image_url': image_url
-            }
+            'params[title]': title,
+            'params[image_url]': image_url
         }
         if url:
             data['url'] = url
         if body:
-            data['params']['body'] = body
+            data['params[body]'] = body
         if background_color:
-            data['params']['background_color'] = background_color
+            data['params[background_color]'] = background_color
         if title_color:
-            data['params']['title_color'] = title_color
+            data['params[title_color'] = title_color
         if body_color:
-            data['params']['body_color'] = body_color
+            data['params[body_color'] = body_color
 
         response = self.post(url, data=data)
         return response
