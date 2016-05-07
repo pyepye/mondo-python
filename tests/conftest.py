@@ -1,12 +1,13 @@
 import os
 import json
 from datetime import datetime
-from mondo import MondoClient
 
 import pytest
 
+from mondo import MondoClient
 
-@pytest.fixture
+
+@pytest.fixture(scope="module")
 def client():
     CLIENT_SECRET = os.getenv('MONDO_CLIENT_SECRET')
     # print "{0}".format(CLIENT_SECRET)
