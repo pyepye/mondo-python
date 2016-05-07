@@ -153,7 +153,7 @@ class MondoClient(object):
         query = urllib.urlencode(query)
         url = urljoin(self.api_url, 'transactions?{0}'.format(query))
         response = self.get(url)
-        return response
+        return response['transactions']
 
     def get_transaction(self, transactions_id):
         url = urljoin(
@@ -161,7 +161,7 @@ class MondoClient(object):
             'transactions/{0}?expand[]=merchant'.format(transactions_id)
         )
         response = self.get(url)
-        return response
+        return response['transaction']
 
     def annotate_transaction(self, transactions_id, metadata):
         """ Metadata is just a key:value pair """

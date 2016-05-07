@@ -38,14 +38,14 @@ class TestMondoClient:
 
     def test_list_transactions(self, client):
         transactions = client.list_transactions()
-        assert len(transactions['transactions']) > 0
+        assert len(transactions) > 0
 
     def test_get_transaction(self, client):
         transactions = client.list_transactions()
-        assert len(transactions['transactions']) > 0
-        transaction_id = transactions['transactions'][0]['id']
+        assert len(transactions) > 0
+        transaction_id = transactions[0]['id']
         transaction = client.get_transaction(transaction_id)
-        assert 'id' in transaction['transaction'].keys()
+        assert transaction['id'] == transactions[0]['id']
 
     def test_annotate_transaction(self, client):
         # annotate = client.annotate_transaction()
