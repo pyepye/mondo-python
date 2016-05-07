@@ -15,6 +15,19 @@ def webhook(client):
 
 class TestMondoClient:
 
+    def test_refresh_access_token(self, client):
+        access_token = client.access_token
+        refresh_token = client.refresh_token
+        token_info = client.refresh_access_token()
+
+        base_dir = os.path.dirname(__file__)
+        token_file = '{0}/token_info.json'.format(base_dir)
+        with open(token_file, 'w') as fp:
+            json.dump(token_info, fp)
+
+        assert access_token != client.access_token
+        assert refresh_token != client.refresh_token
+
     def test_update_tokens(self, client):
         client.access_token = None
         client.refresh_token = None

@@ -23,7 +23,6 @@ Running the tests
     pip install tox
     export MONDO_CLIENT_SECRET={client_secret}
     export MONDO_CLIENT_ID={client_id}
-    python tools/setup_access.py
 
     tox
 
