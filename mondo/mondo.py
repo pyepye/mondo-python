@@ -43,12 +43,12 @@ class MondoClient(object):
     def request(self, **kwargs):
         self._ensure_access_token()
 
-        if kwargs['url'].endswith('/'):
+        if kwargs['url'].endswith('/'):  # pragma: no cover
             kwargs['url'] = kwargs['url'][:-1]
 
         if 'method' in kwargs:
             kwargs['method'] = kwargs['method'].upper()
-        else:
+        else:  # pragma: no cover
             kwargs['method'] = 'GET'
 
         kwargs['headers'] = {'Authorization': 'Bearer {0}'.format(self.access_token)}  # NOQA
@@ -59,7 +59,7 @@ class MondoClient(object):
         response.raise_for_status()
         return response.json()
 
-    def get_authorization_code(self):
+    def get_authorization_code(self):  # pragma: no cover
         query = urllib.urlencode({
             'client_id': self.client_id,
             'redirect_uri': self.login_url,
@@ -68,7 +68,7 @@ class MondoClient(object):
         url = urljoin(self.auth_url, '?{0}'.format(query))
         return url
 
-    def get_access_token(self, code):
+    def get_access_token(self, code):  # pragma: no cover
         data = {
             'grant_type': 'authorization_code',
             'client_id': self.client_id,
@@ -83,7 +83,7 @@ class MondoClient(object):
         return response
 
     def refresh_access_token(self, refresh_token=None):
-        if refresh_token:
+        if refresh_token:  # pragma: no cover
             self.refresh_token = refresh_token
         data = {
             'grant_type': 'refresh_token',
@@ -105,14 +105,14 @@ class MondoClient(object):
 
     def _ensure_access_token(self):
         expires_at = datetime.strptime(self.expires_at, "%Y-%m-%dT%H:%M:%S.%f")
-        if datetime.now() > expires_at:
+        if datetime.now() > expires_at:  # pragma: no cover
             self.refresh_access_token()
 
     def update_tokens(self, **kwargs):
         self.access_token = kwargs['access_token']
         self.refresh_token = kwargs['refresh_token']
         self.expires_at = kwargs['expires_at']
-        if 'account_id' in kwargs:
+        if 'account_id' in kwargs:  # pragma: no cover
             self.account_id = kwargs['account_id']
         else:
             accounts = self.list_accounts()
@@ -136,7 +136,7 @@ class MondoClient(object):
         return response
 
     def get_balance(self, account_id=None):
-        if account_id:
+        if account_id:  # pragma: no cover
             self.account_id = account_id
 
         url = urljoin(self.api_url, 'balance?account_id={0}'.format(self.account_id))  # NOQA
@@ -144,7 +144,7 @@ class MondoClient(object):
         return response
 
     def list_transactions(self, account_id=None, limit=100, since='', before=''):  # NOQA
-        if account_id:
+        if account_id:  # pragma: no cover
             self.account_id = account_id
 
         query = {
@@ -191,7 +191,7 @@ class MondoClient(object):
         return response
 
     def get_feed(self, account_id=None):
-        if account_id:
+        if account_id:  # pragma: no cover
             self.account_id = account_id
 
         url = urljoin(self.api_url, 'feed?account_id={0}'.format(self.account_id))  # NOQA
@@ -203,7 +203,7 @@ class MondoClient(object):
         background_color=None, title_color=None, body_color=None,
         account_id=None
     ):
-        if account_id:
+        if account_id:  # pragma: no cover
             self.account_id = account_id
 
         url = urljoin(self.api_url, 'feed')
@@ -228,7 +228,7 @@ class MondoClient(object):
         return response
 
     def list_webhooks(self, account_id=None):
-        if account_id:
+        if account_id:  # pragma: no cover
             self.account_id = account_id
 
         url = urljoin(self.api_url, 'webhooks?account_id={0}'.format(self.account_id))  # NOQA
@@ -236,7 +236,7 @@ class MondoClient(object):
         return response['webhooks']
 
     def create_webhook(self, webhook_url, account_id=None):
-        if account_id:
+        if account_id:  # pragma: no cover
             self.account_id = account_id
         url = urljoin(self.api_url, 'webhooks')
         data = {
@@ -247,7 +247,7 @@ class MondoClient(object):
         return response['webhook']
 
     def remove_webhook(self, webhook_id, account_id=None):
-        if account_id:
+        if account_id:  # pragma: no cover
             self.account_id = account_id
 
         url = urljoin(self.api_url, 'webhooks/{0}'.format(webhook_id))
