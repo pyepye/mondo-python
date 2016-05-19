@@ -220,9 +220,9 @@ class MondoClient(object):
         if background_color:
             data['params[background_color]'] = background_color
         if title_color:
-            data['params[title_color'] = title_color
+            data['params[title_color]'] = title_color
         if body_color:
-            data['params[body_color'] = body_color
+            data['params[body_color]'] = body_color
 
         response = self.post(url, data=data)
         return response

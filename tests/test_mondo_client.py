@@ -121,9 +121,17 @@ class TestMondoClient:
         assert annotation_key not in transaction['metadata']
 
     def test_create_feed_item(self, client):
-        feed_item_name = 'mondo-python test_create_feed_item'
+        feed_item_name = 'mondo-python'
         image_url = 'https://raw.githubusercontent.com/pyepye/mondo-python/master/tests/mondo-logo.png'  # NOQA
-        feed_created = client.create_feed_item(feed_item_name, image_url)
+        feed_created = client.create_feed_item(
+            feed_item_name,
+            image_url,
+            url='http://example.com',
+            body='You just ran the test_create_feed_item test',
+            background_color='#14233C',
+            title_color='#FFF',
+            body_color='#DDD'
+        )
         assert type(feed_created) is dict
         feed = client.get_feed()
         found_feed_item = False

@@ -6,7 +6,6 @@ import webbrowser
 from datetime import datetime
 from urlparse import urlparse, parse_qs
 
-
 import pytest
 
 from mondo import MondoClient
