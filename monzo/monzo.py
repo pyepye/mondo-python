@@ -6,7 +6,7 @@ from mimetypes import MimeTypes
 from datetime import datetime, timedelta
 
 
-class MondoClient(object):
+class MonzoClient(object):
 
     def __init__(
         self,
@@ -17,8 +17,8 @@ class MondoClient(object):
         refresh_token=None,
         account_id=None,
     ):
-        self.token_url = 'https://api.getmondo.co.uk/oauth2/token'
-        self.api_url = 'https://api.getmondo.co.uk/'
+        self.token_url = 'https://api.monzo.com/oauth2/token'
+        self.api_url = 'https://api.monzo.com/'
         self.auth_url = 'https://auth.getmondo.co.uk/'
         self.client_id = client_id
         self.client_secret = client_secret

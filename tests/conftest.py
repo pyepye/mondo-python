@@ -8,17 +8,17 @@ from urlparse import urlparse, parse_qs
 
 import pytest
 
-from mondo import MondoClient
+from monzo import MonzoClient
 
 
 @pytest.fixture(scope="module")
 def client():
-    client_secret = os.getenv('MONDO_CLIENT_SECRET')
+    client_secret = os.getenv('MONZO_CLIENT_SECRET')
     if not client_secret:
-        raise ValueError('MONDO_CLIENT_SECRET environment variable must be set')  # NOQA
-    client_id = os.getenv('MONDO_CLIENT_ID')
+        raise ValueError('MONZO_CLIENT_SECRET environment variable must be set')  # NOQA
+    client_id = os.getenv('MONZO_CLIENT_ID')
     if not client_id:
-        raise ValueError('MONDO_CLIENT_ID environment variable must be set')
+        raise ValueError('MONZO_CLIENT_ID environment variable must be set')
 
     try:
         base_url = os.path.dirname(__file__)
@@ -32,21 +32,21 @@ def client():
         tokens = setup_access(client_id, client_secret)
 
     login_url = 'http://example.com/login/'
-    mondo = MondoClient(
+    monzo = MonzoClient(
         client_id=client_id,
         client_secret=client_secret,
         login_url=login_url,
         access_token=tokens['access_token'],
         refresh_token=tokens['refresh_token'],
     )
-    mondo.update_tokens(**tokens)
-    return mondo
+    monzo.update_tokens(**tokens)
+    return monzo
 
 
 def setup_access(client_id, client_secret):
 
-    mondo = MondoClient(client_id, client_secret, 'http://example.com/login/')
-    auth_url = mondo.get_authorization_code()
+    monzo = MonzoClient(client_id, client_secret, 'http://example.com/login/')
+    auth_url = monzo.get_authorization_code()
 
     print '\nA browser will now open, please login and copy the URL once authenticated'  # NOQA
     if sys.platform == 'darwin':
@@ -54,11 +54,11 @@ def setup_access(client_id, client_secret):
     else:
         webbrowser.open_new_tab(auth_url)
 
-    url = raw_input("\nPlease enter the url from the 'Log in to Mondo' button in the authentication email: ")  # NOQA
+    url = raw_input("\nPlease enter the url from the 'Log in to Monzo' button in the authentication email: ")  # NOQA
     url = urlparse(url)
     query = parse_qs(url.query)
     code = query['code'][0]
-    token_info = mondo.get_access_token(code)
+    token_info = monzo.get_access_token(code)
 
     base_dir = os.path.dirname(__file__)
     token_file = '{0}/token_info.json'.format(base_dir)

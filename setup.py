@@ -4,11 +4,11 @@ from setuptools import setup, find_packages
 README = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
 
 setup(
-    name='mondo',
+    name='monzo',
     version='0.1.0',
-    packages=find_packages('mondo'),
-    package_dir={'': 'mondo'},
-    description='Wrapper for the Mondo API',
+    packages=find_packages('monzo'),
+    package_dir={'': 'monzo'},
+    description='Wrapper for the Monzo API',
     long_description=README,
     author='Matt Pye',
     author_email='pyematt@gmail.com',

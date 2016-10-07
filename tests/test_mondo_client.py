@@ -3,7 +3,7 @@ import json
 
 import pytest
 
-TEST_WEBHOOK_URL = 'http://example.com/mondotestwebhooks'
+TEST_WEBHOOK_URL = 'http://example.com/monzotestwebhooks'
 
 
 @pytest.yield_fixture()
@@ -32,7 +32,7 @@ def add_attachment(client):
     transactions = client.list_transactions()
     transaction_id = transactions[0]['id']
     base_dir = os.path.dirname(__file__)
-    file_path = '{0}/mondo-logo.png'.format(base_dir)
+    file_path = '{0}/monzo-logo.png'.format(base_dir)
     file_upload = client.upload_attachment(file_path)
     attachment = client.attach_file(
         transaction_id,
@@ -46,7 +46,7 @@ def add_attachment(client):
     client.remove_attachment(attachment['id'])
 
 
-class TestMondoClient:
+class TestMonzoClient:
 
     def test_refresh_access_token(self, client):
         access_token = client.access_token
@@ -121,8 +121,8 @@ class TestMondoClient:
         assert annotation_key not in transaction['metadata']
 
     def test_create_feed_item(self, client):
-        feed_item_name = 'mondo-python'
-        image_url = 'https://raw.githubusercontent.com/pyepye/mondo-python/master/tests/mondo-logo.png'  # NOQA
+        feed_item_name = 'monzo-python'
+        image_url = 'https://raw.githubusercontent.com/pyepye/monzo-python/master/tests/monzo-logo.png'  # NOQA
         feed_created = client.create_feed_item(
             feed_item_name,
             image_url,
@@ -165,7 +165,7 @@ class TestMondoClient:
         transaction_id = transactions[0]['id']
 
         base_dir = os.path.dirname(__file__)
-        file_path = '{0}/mondo-logo.png'.format(base_dir)
+        file_path = '{0}/monzo-logo.png'.format(base_dir)
         file_upload = client.upload_attachment(file_path)
         assert file_upload['file_type'] == 'image/png'
         assert 'file_url' in file_upload
