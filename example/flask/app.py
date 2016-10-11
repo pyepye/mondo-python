@@ -1,8 +1,8 @@
+# -*- coding: utf-8 -*-
+
 import os
 
-from flask import (
-    Flask, render_template, redirect, url_for, make_response, request
-)
+from flask import Flask, redirect, url_for, make_response, request, jsonify
 from itsdangerous import URLSafeSerializer
 
 from monzo import MonzoClient
@@ -28,8 +28,8 @@ def home():
         monzo.update_tokens(**tokens)
         ctx = {'whoami': monzo.whoami()}
     else:
-        ctx = {'noauth': True}
-    return render_template('index.html', **ctx)
+        ctx = {'Login': 'Please go to /login/ to login'}
+    return jsonify(**ctx)
 
 
 @app.route('/login/')
