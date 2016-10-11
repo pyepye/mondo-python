@@ -10,9 +10,9 @@ class MonzoClient(object):
 
     def __init__(
         self,
-        client_id,
-        client_secret,
-        login_url,
+        client_id=None,  # Needed if access code is not already aquired
+        client_secret=None,  # Needed if access code is not already aquired
+        login_url=None,  # Needed if access code is not already aquired
         access_token=None,
         refresh_token=None,
         account_id=None,
@@ -20,9 +20,9 @@ class MonzoClient(object):
         self.token_url = 'https://api.monzo.com/oauth2/token'
         self.api_url = 'https://api.monzo.com/'
         self.auth_url = 'https://auth.getmondo.co.uk/'
-        self.client_id = client_id
-        self.client_secret = client_secret
-        self.login_url = login_url
+        self.client_id = client_id if client_id else ''
+        self.client_secret = client_secret if client_secret else ''
+        self.login_url = login_url if login_url else ''
         self.access_token = access_token if access_token else ''
         self.refresh_token = refresh_token if refresh_token else ''
         self.account_id = account_id if account_id else ''
@@ -109,9 +109,12 @@ class MonzoClient(object):
             self.refresh_access_token()
 
     def update_tokens(self, **kwargs):
-        self.access_token = kwargs['access_token']
-        self.refresh_token = kwargs['refresh_token']
-        self.expires_at = kwargs['expires_at']
+        if 'access_token' in kwargs:
+            self.access_token = kwargs['access_token']
+        if 'refresh_token' in kwargs:
+            self.refresh_token = kwargs['refresh_token']
+        if 'expires_at' in kwargs:
+            self.expires_at = kwargs['expires_at']
         if 'account_id' in kwargs:  # pragma: no cover
             self.account_id = kwargs['account_id']
         else:
