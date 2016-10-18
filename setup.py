@@ -5,7 +5,7 @@ README = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
 
 setup(
     name='monzo',
-    version='0.2.0',
+    version='0.2.1',
     packages=find_packages('monzo'),
     package_dir={'': 'monzo'},
     description='Wrapper for the Monzo API',

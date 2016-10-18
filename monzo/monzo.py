@@ -78,7 +78,8 @@ class MonzoClient(object):
         }
         response = self.post(url=self.token_url, data=data)
         self.access_token = response['access_token']
-        self.refresh_token = response['refresh_token']
+        if 'refresh_token' in response:
+            self.refresh_token = response['refresh_token']
         response['expires_at'] = self._set_expires_at(response['expires_in'])
         return response
 
